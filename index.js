@@ -8,26 +8,41 @@ const bot = new TelegramBot(TELEGRAM_TOKEN, { polling: true });
 
 bot.on("message", async (msg) => {
   const chatId = msg.chat.id;
-  const text = msg.text;
+  let text = msg.text;
 
   if (!text) return;
 
+  // cek mode santai (#)
+  const isSantai = text.includes("#");
+  text = text.replace("#", "").trim();
+
   const SYSTEM_RULES = `
-Kamu adalah translator khusus Mandarin ↔ Indonesia.
+Kamu adalah translator Mandarin ↔ Indonesia.
 
 TUGAS:
-HANYA menerjemahkan teks, bukan menjawab.
+HANYA menerjemahkan.
 
 ATURAN:
-- Full translate, tidak boleh skip
-- 三四五 → 3 4 5
-- 您=Anda, 你=kamu, 我=saya (hanya jika berdiri sendiri)
-- Jangan terjemahkan kata per kata jika itu frasa umum
-- Gunakan arti natural dalam bahasa Indonesia
-- Jaga tanda baca sesuai teks asli
-- Output hanya hasil translate
+- WAJIB translate sesuai bahasa asal:
+  Mandarin → Indonesia
+  Indonesia → Mandarin
+- Tidak boleh menjawab
+- Tidak boleh menambah
+- Tidak boleh mengurangi
 
-ISTILAH WAJIB:
+ATURAN TAMBAHAN:
+- 三四五 → 3 4 5
+- 您=Anda, 你=kamu, 我=saya (jika berdiri sendiri)
+- Gunakan arti natural, bukan kata per kata
+- Jaga tanda baca
+
+MODE SANTAI:
+Jika teks dari user mengandung "#":
+- Gunakan bahasa santai
+- Boleh disingkat (sy, kmu, udh, dll)
+- Jangan formal
+
+ISTILAH:
 新人=anggota baru
 链接=link
 签到=check in
@@ -44,6 +59,8 @@ CONTOH:
   const prompt = `
 ${SYSTEM_RULES}
 
+MODE: ${isSantai ? "SANTAI" : "NORMAL"}
+
 TEXT:
 ${text}
 `;
@@ -59,7 +76,7 @@ ${text}
             content: prompt
           }
         ],
-        temperature: 0.3
+        temperature: 0.2
       },
       {
         headers: {
