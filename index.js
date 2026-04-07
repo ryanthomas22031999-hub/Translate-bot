@@ -27,8 +27,7 @@ ATURAN:
   Mandarin → Indonesia
   Indonesia → Mandarin
 - Tidak boleh menjawab
-- Tidak boleh menambah
-- Tidak boleh mengurangi
+- Tidak boleh menambah/mengurangi isi
 
 ATURAN TAMBAHAN:
 - 三四五 → 3 4 5
@@ -36,11 +35,27 @@ ATURAN TAMBAHAN:
 - Gunakan arti natural, bukan kata per kata
 - Jaga tanda baca
 
-MODE SANTAI:
-Jika teks dari user mengandung "#":
-- Gunakan bahasa santai
-- Boleh disingkat (sy, kmu, udh, dll)
+MODE SANTAI (#):
+Jika ada "#" di teks:
+WAJIB:
+- Pakai bahasa chat sehari-hari
+- WAJIB disingkat:
+  saya → sy
+  kamu → kmu
+  sedang → lg
+  sudah → udh
+  belum → blm
+  tidak → ga
+  bisa → bs
+  saja → aja
+  dengan → dgn
+  karena → krn
+  atau → ato
+  yang → yg
+  untuk → utk
+- Jangan pakai bahasa baku
 - Jangan formal
+- Harus terasa seperti chat orang biasa
 
 ISTILAH:
 新人=anggota baru
@@ -59,7 +74,7 @@ CONTOH:
   const prompt = `
 ${SYSTEM_RULES}
 
-MODE: ${isSantai ? "SANTAI" : "NORMAL"}
+MODE: ${isSantai ? "SANTAI WAJIB SINGKAT & GAUL" : "NORMAL"}
 
 TEXT:
 ${text}
