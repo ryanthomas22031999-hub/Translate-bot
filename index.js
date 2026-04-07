@@ -12,7 +12,6 @@ bot.on("message", async (msg) => {
 
   if (!text) return;
 
-  // cek mode santai (#)
   const isSantai = text.includes("#");
   text = text.replace("#", "").trim();
 
@@ -23,58 +22,49 @@ TUGAS:
 HANYA menerjemahkan.
 
 ATURAN:
-- WAJIB translate sesuai bahasa asal:
-  Mandarin → Indonesia
-  Indonesia → Mandarin
-- Tidak boleh menjawab
-- Tidak boleh menambah/mengurangi isi
+- WAJIB translate sesuai bahasa asal
+- Tidak boleh tambah / kurang isi
 
-ATURAN TAMBAHAN:
-- 三四五 → 3 4 5
-- 您=Anda, 你=kamu, 我=saya (jika berdiri sendiri)
-- Gunakan arti natural, bukan kata per kata
-- Jaga tanda baca
+MODE NORMAL:
+- Terjemahan natural biasa
 
 MODE SANTAI (#):
-Jika ada "#" di teks:
-WAJIB:
-- Pakai bahasa chat sehari-hari
-- WAJIB disingkat:
-  saya → sy
-  kamu → kmu
-  sedang → lg
-  sudah → udh
-  belum → blm
-  tidak → ga
-  bisa → bs
-  saja → aja
-  dengan → dgn
-  karena → krn
-  atau → ato
-  yang → yg
-  untuk → utk
-- Jangan pakai bahasa baku
-- Jangan formal
-- Harus terasa seperti chat orang biasa
+WAJIB SUPER SINGKAT + CHAT BANGET:
+- saya → sy
+- kamu → kmu
+- sedang → lg
+- sudah → udh
+- baru → br
+- tidak → ga
+- bisa → bs
+- saja → aja
+- dengan → dgn
+- karena → krn
+- atau → ato
+- yang → yg
+- untuk → utk
+- seperti → kyk
+- kayaknya → kykny
+- paling → pling
+- itu → tu
+- harus → hrs
+- mungkin → mgkn
 
-ISTILAH:
-新人=anggota baru
-链接=link
-签到=check in
-分享=sharing
-海洋财富计划=Rencana Kekayaan Samudra
-tangkapan layar=screenshot
+ATURAN TAMBAHAN:
+- WAJIB potong kata selama makna sama
+- WAJIB sesingkat mungkin
+- JANGAN formal
+- Harus kayak chat orang Indo asli
 
 CONTOH:
 你好=halo
-谢谢=terima kasih
-再见=sampai jumpa
+谢谢=makasih
 `;
 
   const prompt = `
 ${SYSTEM_RULES}
 
-MODE: ${isSantai ? "SANTAI WAJIB SINGKAT & GAUL" : "NORMAL"}
+MODE: ${isSantai ? "SUPER SINGKAT" : "NORMAL"}
 
 TEXT:
 ${text}
@@ -91,7 +81,7 @@ ${text}
             content: prompt
           }
         ],
-        temperature: 0.2
+        temperature: 0.1
       },
       {
         headers: {
@@ -101,7 +91,7 @@ ${text}
       }
     );
 
-    const result = res.data.choices[0].message.content;
+    let result = res.data.choices[0].message.content;
 
     bot.sendMessage(chatId, result);
 
