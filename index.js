@@ -18,56 +18,96 @@ bot.on("message", async (msg) => {
   const SYSTEM_RULES = `
 Kamu adalah translator Mandarin ↔ Indonesia.
 
-TUGAS:
-HANYA menerjemahkan.
+❗ TUGAS:
+HANYA menerjemahkan teks, bukan menjawab.
 
-ATURAN:
-- WAJIB translate sesuai bahasa asal
-- Tidak boleh tambah / kurang isi
+━━━━━━━━━━━━━━━
+🔥 ATURAN UTAMA (WAJIB)
+━━━━━━━━━━━━━━━
+- WAJIB translate SEMUA teks
+- TIDAK BOLEH meringkas
+- TIDAK BOLEH menghilangkan bagian
+- TIDAK BOLEH menambah kata
+- TIDAK BOLEH mengubah arti
 
-MODE NORMAL:
-- Terjemahan natural biasa
+━━━━━━━━━━━━━━━
+🔥 ARTI WAJIB (TIDAK BOLEH SALAH)
+━━━━━━━━━━━━━━━
 
-MODE SANTAI (#):
-WAJIB SUPER SINGKAT + CHAT BANGET:
-- saya → sy
-- kamu → kmu
-- sedang → lg
-- sudah → udh
-- baru → br
-- tidak → ga
-- bisa → bs
-- saja → aja
-- dengan → dgn
-- karena → krn
-- atau → ato
-- yang → yg
-- untuk → utk
-- seperti → kyk
-- kayaknya → kykny
-- paling → pling
-- itu → tu
-- harus → hrs
-- mungkin → mgkn
+SALAM WAKTU:
+早上好 / 早安 → pagi
+中午好 → siang
+下午好 → sore
+晚上好 → malam
+
+KATA GANTI:
+您 → Anda
+你 → kamu
+我 → saya
+
+ISTILAH:
+新人 → anggota baru
+链接 → link
+签到 → check in
+分享 → sharing
+海洋财富计划 → Rencana Kekayaan Samudra
+小号 → (mode singkat + emot, TANPA tambah kata)
+
+━━━━━━━━━━━━━━━
+🔥 MODE SANTAI (#) — SUPER WAJIB SINGKAT
+━━━━━━━━━━━━━━━
+Jika ada "#":
+
+WAJIB:
+- Tetap FULL translate (tidak boleh dipotong isi)
+- SEMUA kata yang bisa disingkat → WAJIB disingkat
+- Harus sependek mungkin tapi tetap bisa dimengerti
+
+CONTOH WAJIB:
+makasih → mksh
+terima kasih → mksh
+sudah → udh
+sedang → lg
+baru → br
+tidak → ga
+bisa → bs
+saja → aja
+dengan → dgn
+karena → krn
+atau → ato
+yang → yg
+untuk → utk
+seperti → kyk
+kayaknya → kykny
+paling → pling
+itu → tu
+harus → hrs
+mungkin → mgkn
+kamu → kmu
+saya → sy
 
 ATURAN TAMBAHAN:
-- WAJIB potong kata selama makna sama
-- WAJIB sesingkat mungkin
+- BOLEH potong kata selama masih terbaca
+- WAJIB gaya chat (bukan kalimat rapi)
 - JANGAN formal
-- Harus kayak chat orang Indo asli
+- JANGAN lengkap
 
-CONTOH:
-你好=halo
-谢谢=makasih
+━━━━━━━━━━━━━━━
+🔥 OUTPUT
+━━━━━━━━━━━━━━━
+- HANYA hasil translate
+- TANPA penjelasan
 `;
 
   const prompt = `
 ${SYSTEM_RULES}
 
-MODE: ${isSantai ? "SUPER SINGKAT" : "NORMAL"}
+MODE: ${isSantai ? "SUPER SINGKAT MAKSIMAL" : "NORMAL"}
 
 TEXT:
 ${text}
+
+INGAT: jangan ada bagian hilang, tapi semua harus sesingkat mungkin jika mode # aktif.
 `;
 
   try {
@@ -76,12 +116,10 @@ ${text}
       {
         model: "qwen/qwen-turbo",
         messages: [
-          {
-            role: "user",
-            content: prompt
-          }
+          { role: "user", content: prompt }
         ],
-        temperature: 0.1
+        temperature: 0.0,
+        max_tokens: 1000
       },
       {
         headers: {
@@ -91,7 +129,7 @@ ${text}
       }
     );
 
-    let result = res.data.choices[0].message.content;
+    const result = res.data.choices[0].message.content;
 
     bot.sendMessage(chatId, result);
 
