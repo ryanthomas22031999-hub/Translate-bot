@@ -6,6 +6,11 @@ const OPENROUTER_KEY = process.env.OPENROUTER_KEY;
 
 const bot = new TelegramBot(TELEGRAM_TOKEN, { polling: true });
 
+// ✅ TAMBAHAN (deteksi Mandarin)
+function isChinese(text) {
+  return /[\u4e00-\u9fff]/.test(text);
+}
+
 bot.on("message", async (msg) => {
   const chatId = msg.chat.id;
   let text = msg.text;
@@ -14,6 +19,12 @@ bot.on("message", async (msg) => {
 
   const isSantai = text.includes("#");
   text = text.replace("#", "").trim();
+
+  // ✅ TAMBAHAN (tentukan arah)
+  const fromChinese = isChinese(text);
+  const direction = fromChinese
+    ? "Mandarin → Indonesia"
+    : "Indonesia → Mandarin";
 
   const SYSTEM_RULES = `
 Kamu adalah translator Mandarin ↔ Indonesia.
@@ -29,6 +40,7 @@ HANYA menerjemahkan teks, bukan menjawab.
 - TIDAK BOLEH menghilangkan bagian
 - TIDAK BOLEH menambah kata
 - TIDAK BOLEH mengubah arti
+- WAJIB ganti bahasa sesuai arah (TIDAK BOLEH tetap bahasa asal)
 
 ━━━━━━━━━━━━━━━
 🔥 ARTI WAJIB (TIDAK BOLEH SALAH)
@@ -102,12 +114,17 @@ ATURAN TAMBAHAN:
   const prompt = `
 ${SYSTEM_RULES}
 
+ARAH TRANSLATE (WAJIB IKUT):
+${direction}
+
 MODE: ${isSantai ? "SUPER SINGKAT MAKSIMAL" : "NORMAL"}
 
 TEXT:
 ${text}
 
-INGAT: jangan ada bagian hilang, tapi semua harus sesingkat mungkin jika mode # aktif.
+INGAT:
+- HARUS ganti bahasa (tidak boleh sama)
+- jangan ada bagian hilang
 `;
 
   try {
