@@ -6,7 +6,7 @@ const OPENROUTER_KEY = process.env.OPENROUTER_KEY;
 
 const bot = new TelegramBot(TELEGRAM_TOKEN, { polling: true });
 
-// ✅ TAMBAHAN (deteksi Mandarin)
+// detect chinese
 function isChinese(text) {
   return /[\u4e00-\u9fff]/.test(text);
 }
@@ -20,7 +20,6 @@ bot.on("message", async (msg) => {
   const isSantai = text.includes("#");
   text = text.replace("#", "").trim();
 
-  // ✅ TAMBAHAN (tentukan arah)
   const fromChinese = isChinese(text);
   const direction = fromChinese
     ? "Mandarin → Indonesia"
@@ -64,6 +63,22 @@ ISTILAH:
 分享 → sharing
 海洋财富计划 → Rencana Kekayaan Samudra
 小号 → (mode singkat + emot, TANPA tambah kata)
+
+━━━━━━━━━━━━━━━
+🔥 FORMAT BAHASA MANDARIN (WAJIB)
+━━━━━━━━━━━━━━━
+- WAJIB gunakan Chinese Simplified (简体中文)
+- DILARANG menggunakan Traditional Chinese (繁体中文)
+- Jika hasil menggunakan Traditional → WAJIB ubah ke Simplified
+
+CONTOH WAJIB:
+账户 ✅
+帳戶 ❌
+
+链接 ✅
+鏈接 ❌
+
+WAJIB gunakan standar Mandarin China daratan (Mainland China)
 
 ━━━━━━━━━━━━━━━
 🔥 MODE SANTAI (#) — SUPER WAJIB SINGKAT
@@ -123,7 +138,7 @@ TEXT:
 ${text}
 
 INGAT:
-- HARUS ganti bahasa (tidak boleh sama)
+- HARUS ganti bahasa
 - jangan ada bagian hilang
 `;
 
