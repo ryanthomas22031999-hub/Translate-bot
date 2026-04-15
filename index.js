@@ -146,11 +146,11 @@ INGAT:
     const res = await axios.post(
       "https://openrouter.ai/api/v1/chat/completions",
       {
-        model: "qwen/qwen-turbo",
+        model: "anthropic/claude-3-haiku", // ✅ Claude
         messages: [
           { role: "user", content: prompt }
         ],
-        temperature: 0.0,
+        temperature: 0.1,
         max_tokens: 1000
       },
       {
@@ -166,7 +166,20 @@ INGAT:
     bot.sendMessage(chatId, result);
 
   } catch (err) {
-    console.log(err.response?.data || err.message);
-    bot.sendMessage(chatId, "Error");
+    const errorMsg =
+      err.response?.data?.error?.message ||
+      err.response?.data ||
+      err.message;
+
+    console.log(errorMsg);
+
+    if (
+      typeof errorMsg === "string" &&
+      errorMsg.toLowerCase().includes("insufficient")
+    ) {
+      bot.sendMessage(chatId, "Error: insufficient balance");
+    } else {
+      bot.sendMessage(chatId, "Error");
+    }
   }
 });
